@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>HumiTrack</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app">
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="login-screen" class="screen active">
+      <div class="login-shell">
+        <div class="brand-block">
+          <p class="eyebrow">Room Humidity Monitoring</p>
+          <h1>HumiTrack</h1>
+          <p class="subtle">
+            One login page for operators and admin. Users enter room humidity values, receive hourly reminders, and get instant high/low alerts.
+          </p>
+        </div>
+
+        <div class="panel login-panel">
+          <div class="panel-head">
+            <h2>Sign In</h2>
+            <p class="subtle">Access depends on your user ID and password.</p>
+          </div>
+
+          <div id="login-error" class="inline-alert danger hidden">Invalid username or password.</div>
+          <div id="sync-banner" class="inline-alert muted">Local mode active. Add your Google Apps Script URL in `app.js` to sync with Google Sheets.</div>
+
+          <label class="field">
+            <span>Username</span>
+            <input id="login-username" type="text" placeholder="Enter username" autocomplete="username">
+          </label>
+
+          <label class="field">
+            <span>Password</span>
+            <input id="login-password" type="password" placeholder="Enter password" autocomplete="current-password">
+          </label>
+
+          <button id="login-button" class="btn btn-primary" type="button">Sign In</button>
+
+          <div class="credential-box">
+            <div class="credential-title">Demo Credentials</div>
+            <p>`admin / admin123`</p>
+            <p>`ajay / ajay123`</p>
+            <p>`poornima / poornima123`</p>
+            <p>`sairam / sairam123`</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="app-screen" class="screen">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">HumiTrack</p>
+          <h2 class="topbar-title">Humidity Control Panel</h2>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="alerts-shortcut" class="icon-btn" type="button" title="Open alerts">
+            Alerts
+            <span id="alert-count" class="count-badge hidden">0</span>
+          </button>
+          <div class="user-pill">
+            <div id="user-avatar" class="user-avatar">A</div>
+            <div>
+              <div id="user-name" class="user-name">User</div>
+              <div id="user-role" class="user-role">User</div>
+            </div>
+          </div>
+          <button id="logout-button" class="btn btn-secondary" type="button">Logout</button>
+        </div>
+      </header>
+
+      <div class="app-layout">
+        <aside class="sidebar">
+          <nav id="nav-list" class="nav-list"></nav>
+        </aside>
+
+        <main class="content">
+          <section id="page-entry" class="page">
+            <div class="page-head">
+              <div>
+                <p class="eyebrow">User Panel</p>
+                <h3>Today&apos;s Entry</h3>
+              </div>
+              <p class="subtle">Enter room humidity values hourly and save to the system.</p>
+            </div>
+            <div id="entry-root"></div>
+          </section>
+
+          <section id="page-history" class="page">
+            <div class="page-head">
+              <div>
+                <p class="eyebrow">User Panel</p>
+                <h3>My History</h3>
+              </div>
+              <p class="subtle">See your previous humidity entries.</p>
+            </div>
+            <div class="panel">
+              <div class="filters">
+                <input id="history-search" type="text" placeholder="Search date or room">
+                <select id="history-room"></select>
+              </div>
+              <div id="history-root"></div>
+            </div>
+          </section>
+
+          <section id="page-alerts" class="page">
+            <div class="page-head">
+              <div>
+                <p class="eyebrow">Monitoring</p>
+                <h3>Alerts</h3>
+              </div>
+              <p class="subtle">High and low humidity notifications for saved records.</p>
+            </div>
+            <div id="alerts-root"></div>
+          </section>
+
+          <section id="page-overview" class="page">
+            <div class="page-head">
+              <div>
+                <p class="eyebrow">Admin Panel</p>
+                <h3>Overview</h3>
+              </div>
+              <p class="subtle">Track records, alerts, room status, and checker activity.</p>
+            </div>
+            <div id="overview-root"></div>
+          </section>
+
+          <section id="page-records" class="page">
+            <div class="page-head">
+              <div>
+                <p class="eyebrow">Admin Panel</p>
+                <h3>All Records</h3>
+              </div>
+              <p class="subtle">Review all room entries collected from users.</p>
+            </div>
+            <div class="panel">
+              <div class="filters">
+                <input id="records-date" type="text" placeholder="Filter by date">
+                <select id="records-room"></select>
+                <select id="records-checker"></select>
+                <button id="export-button" class="btn btn-primary" type="button">Export CSV</button>
+              </div>
+              <div id="records-root"></div>
+            </div>
+          </section>
+
+          <section id="page-users" class="page">
+            <div class="page-head">
+              <div>
+                <p class="eyebrow">Admin Panel</p>
+                <h3>Users</h3>
+              </div>
+              <p class="subtle">Common login page with user-specific access control.</p>
+            </div>
+            <div id="users-root"></div>
+          </section>
+
+          <section id="page-settings" class="page">
+            <div class="page-head">
+              <div>
+                <p class="eyebrow">Admin Panel</p>
+                <h3>Settings</h3>
+              </div>
+              <p class="subtle">Configure alert thresholds and sync behavior.</p>
+            </div>
+            <div id="settings-root"></div>
+          </section>
+        </main>
+      </div>
+    </section>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
